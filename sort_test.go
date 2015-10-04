@@ -5,7 +5,20 @@ import (
     "math/rand"
     "reflect"
     "testing"
+    "time"
 )
+
+func init() {
+    seed := time.Now().Unix()
+    rand.Seed(seed)
+}
+
+func perm(n int) (out []int) {
+    for _, v := range rand.Perm(n) {
+        out = append(out, v)
+    }
+    return
+}
 
 func TestQSort(t *testing.T) {
     values := []int{9, 1, 20, 3, 6, 7}
@@ -32,7 +45,9 @@ func BenchmarkQSort10000(b *testing.B) {
 
 func benchmarkQSort(i int, b *testing.B) {
     for j := 0; j < b.N; j++ {
-        values := rand.Perm(i)
+        b.StopTimer()
+        values := perm(i)
+        b.StartTimer()
         quicksort.Sort(values)
     }
 }
